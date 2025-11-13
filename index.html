@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚴‍♀️ Bike Rental Prediction</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #89f7fe, #66a6ff);
+      text-align: center;
+      padding: 40px;
+    }
+    form {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      width: 400px;
+      margin: auto;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+    input, select, button {
+      width: 90%;
+      padding: 8px;
+      margin: 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    h2 {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h2>🚴‍♀️ Bike Rental Prediction</h2>
+  <form action="/predict" method="post">
+    <input type="number" name="temperature" step="any" placeholder="Temperature (°C)" required><br>
+    <input type="number" name="humidity" step="any" placeholder="Humidity (%)" required><br>
+    <input type="number" name="windspeed" step="any" placeholder="Windspeed (km/h)" required><br>
+    <select name="holiday">
+      <option value="0">Holiday: No</option>
+      <option value="1">Holiday: Yes</option>
+    </select><br>
+    <select name="workingday">
+      <option value="1">Working Day: Yes</option>
+      <option value="0">Working Day: No</option>
+    </select><br>
+    <select name="season">
+      <option value="1">Spring</option>
+      <option value="2">Summer</option>
+      <option value="3">Fall</option>
+      <option value="4">Winter</option>
+    </select><br>
+    <select name="weathersit">
+      <option value="1">Clear/Partly Cloudy</option>
+      <option value="2">Misty/Cloudy</option>
+      <option value="3">Light Snow/Rain</option>
+      <option value="4">Heavy Rain/Snow</option>
+    </select><br>
+    <select name="yr">
+      <option value="0">2011</option>
+      <option value="1">2012</option>
+      <option value="0">2013</option>
+      <option value="1">2014</option>
+      <option value="0">2015</option>
+      <option value="1">2016</option>
+      <option value="0">2017</option>
+      <option value="1">2018</option>
+      <option value="0">2019</option>
+      <option value="1">2020</option>
+      <option value="0">2021</option>
+      <option value="1">2022</option>
+      <option value="0">2023</option>
+      <option value="1">2024</option>
+
+    </select><br>
+    <button type="submit">Predict</button>
+  </form>
+
+  {% if prediction_text %}
+  <h3 style="margin-top:20px;">{{ prediction_text }}</h3>
+  <p>{{ demand_text }}</p>
+  {% endif %}
+</body>
+</html>
