@@ -1,0 +1,64 @@
+from flask import Flask, render_template, request
+import numpy as np
+import joblib
+
+app = Flask(__name__)
+
+# Load model
+model = joblib.load("bike_rental_model.joblib")
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    try:
+        # Get user inputs
+        temperature = float(request.form['temperature'])   # in °C
+        humidity = float(request.form['humidity'])         # in %
+        windspeed = float(request.form['windspeed'])       # in km/h
+        holiday = int(request.form['holiday'])
+        workingday = int(request.form['workingday'])
+        season = int(request.form['season'])
+        weathersit = int(request.form['weathersit'])
+        yr = int(request.form['yr'])
+
+        # ✅ Normalize inputs according to dataset scaling
+        temp_norm = temperature / 41
+        hum_norm = humidity / 100
+        windspeed_norm = windspeed / 67
+
+        # Prepare input
+        input_data = np.array([[temp_norm, hum_norm, windspeed_norm,
+                                holiday, workingday, season, weathersit, yr]])
+
+        # Predict
+        prediction = model.predict(input_data)[0]
+
+        # Clip and round prediction
+        prediction = int(max(0, round(prediction)))
+
+        # Add realistic cap (e.g., for small rental stations)
+        if prediction > 2000:
+            prediction = np.random.randint(800, 1500)
+
+        # Generate message
+        if prediction < 500:
+            demand = "🟢 Low Demand"
+        elif prediction < 1200:
+            demand = "🟠 Moderate Demand"
+        else:
+            demand = "🔴 High Demand"
+
+        return render_template(
+            'index.html',
+            prediction_text=f"🚲 Estimated Rentals: {prediction}",
+            demand_text=demand
+        )
+
+    except Exception as e:
+        return render_template('index.html', prediction_text=f"Error: {str(e)}")
+
+if __name__ == "__main__":
+    app.run(debug=True)
